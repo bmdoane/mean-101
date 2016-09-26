@@ -39,6 +39,7 @@ app.post('/api/messages', (req, res, err) => {
   const msg = req.body
   Message
     .create(msg)
+    // I'm responding with json, don't care what the client is
     .then(msg => res.json(msg))
     .catch(err)
 })
