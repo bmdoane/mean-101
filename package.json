@@ -1,0 +1,24 @@
+{
+  "name": "mean-101",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmdoane/mean-101.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bmdoane/mean-101/issues"
+  },
+  "homepage": "https://github.com/bmdoane/mean-101#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
