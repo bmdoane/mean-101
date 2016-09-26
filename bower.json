@@ -1,0 +1,17 @@
+{
+  "name": "mean-101",
+  "description": "",
+  "main": "server.js",
+  "authors": [
+    "Brian Doane <brianmdoane@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/bmdoane/mean-101",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
