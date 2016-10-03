@@ -1,4 +1,10 @@
 'use strict'
+// Open socket
+const socket = io()
+// When it connects
+socket.on('connect', () => console.log(`Socket connected`, socket))
+// When it disconnects
+socket.on('disconnect', () => console.log('Socket disconnected'))
 
 angular
   .module('mean101', ['ngRoute'])
