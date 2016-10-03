@@ -15,7 +15,8 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "^1.5.8"
+    "angular": "^1.5.8",
+    "socket.io-client": "^1.4.8"
   },
   "devDependencies": {
     "bootstrap": "^3.3.7"

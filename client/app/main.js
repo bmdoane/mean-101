@@ -1,4 +1,10 @@
 'use strict'
+// Open socket
+const socket = io()
+// When it connects - log socket object(has id)
+socket.on('connect', () => console.log(`Socket connected: ${socket.id}`))
+// When it disconnects
+socket.on('disconnect', () => console.log('Socket disconnected'))
 
 angular
   .module('mean101', ['ngRoute'])
@@ -26,14 +32,30 @@ angular
         content: $scope.content,
       }
 
+    // If browser does not support sockets/ still incorporate $http post method
+      // If connected, emit postMessage, with data
+      if (socket.connected) {
+        return socket.emit('postMessage', msg)
+      }
+      // Post is no longer needed after socket.io
       $http
         .post('/api/messages', msg)
         .then(() => $scope.messages.push(msg))
         .catch(console.error)
     }
+
+    // Populating initial messages
     $http
       .get('/api/messages')
       .then(({ data: { messages }}) =>
         $scope.messages = messages
       )
+
+    // receive new messages
+    socket.on('newMessage', msg => {
+      $scope.messages.push(msg)
+      // Triggers digest cycle - module outside of ang.js requires apply()
+      $scope.$apply()
+
+    })
   })
