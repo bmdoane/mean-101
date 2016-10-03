@@ -31,14 +31,19 @@ angular
         author: $scope.author,
         content: $scope.content,
       }
-      // If connected, emit postMessage, with data
-      socket.emit('postMessage', msg)
 
-      // $http
-      //   .post('/api/messages', msg)
-      //   .then(() => $scope.messages.push(msg))
-      //   .catch(console.error)
+    // If browser does not support sockets/ still incorporate $http post method
+      // If connected, emit postMessage, with data
+      if (socket.connected) {
+        return socket.emit('postMessage', msg)
+      }
+      // Post is no longer needed after socket.io
+      $http
+        .post('/api/messages', msg)
+        .then(() => $scope.messages.push(msg))
+        .catch(console.error)
     }
+
     // Populating initial messages
     $http
       .get('/api/messages')

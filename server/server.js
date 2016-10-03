@@ -46,6 +46,10 @@ app.post('/api/messages', (req, res, err) => {
   const msg = req.body
   Message
     .create(msg)
+    .then(msg => {
+      io.emit('newMessage', msg)
+      return msg // Returns message down change
+    })
     // I'm responding with json, don't care what the client is
     .then(msg => res.json(msg))
     .catch(err)
