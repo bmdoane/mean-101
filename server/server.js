@@ -41,19 +41,21 @@ app.get('/api/messages', (req, res, err) =>
     .catch(err)
 )
 
+// Bundling all below into a function
+app.post('/api/messages', createMessage)
 // Most backend code is going to be db queries
-app.post('/api/messages', (req, res, err) => {
-  const msg = req.body
-  Message
-    .create(msg)
-    .then(msg => {
-      io.emit('newMessage', msg)
-      return msg // Returns message down change
-    })
-    // I'm responding with json, don't care what the client is
-    .then(msg => res.json(msg))
-    .catch(err)
-})
+// app.post('/api/messages', (req, res, err) => {
+//   const msg = req.body
+//   Message
+//     .create(msg)
+//     .then(msg => {
+//       io.emit('newMessage', msg)
+//       return msg // Returns message down change
+//     })
+//     // I'm responding with json, don't care what the client is
+//     .then(msg => res.json(msg))
+//     .catch(err)
+// })
 
 mongoose.Promise = Promise
 mongoose.connect(MONGODB_URL, () =>
@@ -66,10 +68,29 @@ mongoose.connect(MONGODB_URL, () =>
 io.on('connection', socket => {
   console.log(`Socket connected: ${socket.id}`)
   socket.on('disconnect', () => console.log(`Socket diconnected: ${socket.id}`))
-  socket.on('postMessage', msg =>
-    Message
-      .create(msg)
-      .then(msg => io.emit('newMessage', msg))
-      .catch(console.error)
-  )
+    socket.on('postMessage', createMessage)
+  // socket.on('postMessage', msg =>
+  //   Message
+  //     .create(msg)
+  //     .then(msg => io.emit('newMessage', msg))
+  //     .catch(console.error)
+  // )
 })
+
+function createMessage (reqOrMsg, res, next) {
+  console.log("reqOrMsg", reqOrMsg);
+  const msg = reqOrMsg.body || reqOrMsg
+  Message
+    .create(msg)
+    .then(msg => {
+      io.emit('newMessage', msg)
+      return msg
+    })
+    .then(msg => res && res.status(201).json(msg))
+    .catch(err => {
+      if (next) {
+        return next(err)
+      }
+      console.error(err)
+    })
+}
