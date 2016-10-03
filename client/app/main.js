@@ -1,8 +1,8 @@
 'use strict'
 // Open socket
 const socket = io()
-// When it connects
-socket.on('connect', () => console.log(`Socket connected`, socket))
+// When it connects - log socket object(has id)
+socket.on('connect', () => console.log(`Socket connected: ${socket.id}`))
 // When it disconnects
 socket.on('disconnect', () => console.log('Socket disconnected'))
 

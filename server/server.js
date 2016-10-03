@@ -1,12 +1,19 @@
 'use strict'
-// minimale server
+// Minimal server
 // Express executes in the context of where your node modules directory
 // MEAN app - NO res.render
 const express = require('express')
 const mongoose = require('mongoose')
 const { json } = require('body-parser')
+const { Server } = require('http') // Built in node http service
+const socketio = require('socket.io')
 
 const app = express()
+// Creates secondary server to listen to web sockets
+const server = Server(app)
+// What we interact with
+const io = socketio(server)
+
 const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017/meanchat'
 const PORT = process.env.PORT || 3000
 
@@ -46,24 +53,13 @@ app.post('/api/messages', (req, res, err) => {
 
 mongoose.Promise = Promise
 mongoose.connect(MONGODB_URL, () =>
-  app.listen(PORT, () => console.log(`Listening on port: ${PORT}`))
+  // Changed from app to server
+  server.listen(PORT, () => console.log(`Listening on port: ${PORT}`))
 )
 
-// app.get('/api/messages', (req, res) =>
-//   res.json({
-//     messages: [
-//       {
-//         author: 'Tiberious',
-//         content: 'You suck Spock',
-//       },
-//       {
-//         author: 'Spock',
-//         content: 'That is highly illogical'
-//       },
-//       {
-//         author: 'Red Shirt',
-//         content: 'Scotty is dead'
-//       }
-//     ]
-//   })
-// )
+// When server connects the socket is the cb
+// Different browser tabs log diff users with diff ids
+io.on('connection', socket => {
+  console.log(`Socket connected: ${socket.id}`)
+  socket.on('disconnect', () => console.log(`Socket diconnected: ${socket.id}`))
+})
