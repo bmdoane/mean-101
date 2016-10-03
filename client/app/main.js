@@ -31,15 +31,26 @@ angular
         author: $scope.author,
         content: $scope.content,
       }
+      // If connected, emit postMessage, with data
+      socket.emit('postMessage', msg)
 
-      $http
-        .post('/api/messages', msg)
-        .then(() => $scope.messages.push(msg))
-        .catch(console.error)
+      // $http
+      //   .post('/api/messages', msg)
+      //   .then(() => $scope.messages.push(msg))
+      //   .catch(console.error)
     }
+    // Populating initial messages
     $http
       .get('/api/messages')
       .then(({ data: { messages }}) =>
         $scope.messages = messages
       )
+
+    // receive new messages
+    socket.on('newMessage', msg => {
+      $scope.messages.push(msg)
+      // Triggers digest cycle - module outside of ang.js requires apply()
+      $scope.$apply()
+
+    })
   })
